@@ -25,14 +25,15 @@ jobs:
         run: |
           micromamba install -y -n test-env -c conda-forge pyimagej openjdk=8
 
-      - name: Run PyImageJ init test
-        shell: bash -l {0}
+      - name: Run PyImageJ test with timing
+        shell: "bash -l {0}"
         run: |
           echo "Timing pyimagej.init()..."
           python - <<'EOF'
 import time, imagej
 start = time.time()
 ij = imagej.init()
-print(f"Initialization took: {time.time() - start:.2f} seconds")
-print("ImageJ version:", ij.getVersion())
+elapsed = time.time() - start
+print(f"Initialization took: {elapsed:.2f} seconds")
+imagej.test()
 EOF
