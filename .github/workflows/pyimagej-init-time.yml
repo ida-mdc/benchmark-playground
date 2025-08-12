@@ -1,0 +1,38 @@
+name: Measure PyImageJ Init Time
+
+on:
+  workflow_dispatch:
+
+jobs:
+  test-pyimagej:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          micromamba-version: "latest"
+          environment-name: test-env
+          create-args: >-
+            python=3.10
+          init-shell: bash
+          cache-downloads: false
+          cache-environment: false
+
+      - name: Install pyimagej (no cache)
+        run: |
+          micromamba install -y -n test-env -c conda-forge pyimagej openjdk=8
+
+      - name: Run PyImageJ init test
+        shell: bash -l {0}
+        run: |
+          echo "Timing pyimagej.init()..."
+          python - <<'EOF'
+import time, imagej
+start = time.time()
+ij = imagej.init()
+print(f"Initialization took: {time.time() - start:.2f} seconds")
+print("ImageJ version:", ij.getVersion())
+EOF
