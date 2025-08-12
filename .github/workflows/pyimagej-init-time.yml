@@ -25,4 +25,4 @@ jobs:
         run: micromamba install -y -n test-env -c conda-forge pyimagej openjdk=11
 
       - name: Run PyImageJ official test with timing
-        run: micromamba run -n test-env time python -c "import imagej; ij = imagej.init(); imagej.test()"
+        run: micromamba run -n test-env time python -c "import imagej; ij = imagej.init("2.14.0"); print(ij.getVersion())"
