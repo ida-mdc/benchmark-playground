@@ -22,18 +22,7 @@ jobs:
           cache-environment: false
 
       - name: Install pyimagej (no cache)
-        run: |
-          micromamba install -y -n test-env -c conda-forge pyimagej openjdk=8
+        run: micromamba install -y -n test-env -c conda-forge pyimagej openjdk=8
 
-      - name: Run PyImageJ test with timing
-        shell: "bash -l {0}"
-        run: |
-          echo "Timing pyimagej.init()..."
-          python - <<'EOF'
-import time, imagej
-start = time.time()
-ij = imagej.init()
-elapsed = time.time() - start
-print(f"Initialization took: {elapsed:.2f} seconds")
-imagej.test()
-EOF
+      - name: Run PyImageJ official test with timing
+        run: time python -c "import imagej; ij = imagej.init(); imagej.test()"
